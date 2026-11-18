@@ -40,3 +40,16 @@ plugins:
       session_id: "cpa-main"
       plan: "auto" # "auto", "go", or "go-plus"
 ```
+
+## Baseline Linux amd64 fork build
+
+The `baseline` branch packages the same OAuth provider for Linux amd64 guests
+without AVX. It pins CLIProxyAPI v8.0.75 and uses a Debian Bookworm Go builder
+with `GOAMD64=v1` and `CGO_CFLAGS=-O2 -g -march=x86-64`. The C compiler flag
+matters because the original loader error came from CGO code.
+
+From a clean, committed checkout, run `./scripts/build-linux-amd64.sh` with
+Docker, `curl`, `tar`, `python3`, and `sha256sum` installed. The build writes the
+Plugin Store ZIP and `checksums.txt` under `dist/`. The fork keeps the upstream
+plugin ID `opencode-go-oauth` and provider ID `opencode-go`. Use config key
+`plugins.configs.opencode-go-oauth`, not `plugins.configs.opencode-go`.
